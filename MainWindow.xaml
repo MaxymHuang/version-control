@@ -36,84 +36,84 @@
         <TabControl Grid.Row="2" Margin="0,10,0,0">
             <TabItem Header="Commit History">
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="5"/>
-                        <ColumnDefinition Width="1*"/>
-                    </Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- Commit History Panel -->
+            <Border Grid.Column="0" BorderBrush="#CBD5E0" BorderThickness="1" CornerRadius="4">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
                     
-                    <!-- Commit History Panel -->
-                    <Border Grid.Column="0" BorderBrush="#CBD5E0" BorderThickness="1" CornerRadius="4">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            
-                            <Border Grid.Row="0" Background="#4A5568" Padding="10">
-                                <TextBlock Text="Commit History" Foreground="White" FontWeight="Bold" FontSize="14"/>
-                            </Border>
-                            
-                            <TreeView x:Name="CommitHistoryTreeView" Grid.Row="1" 
-                                      SelectedItemChanged="CommitHistoryTreeView_SelectedItemChanged"
-                                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                      ScrollViewer.VerticalScrollBarVisibility="Auto">
-                                <TreeView.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Vertical" Margin="2">
-                                            <TextBlock Text="{Binding ShortId}" FontWeight="Bold" Foreground="#2B6CB0"/>
-                                            <TextBlock Text="{Binding ShortMessage}" Foreground="#4A5568"/>
-                                            <TextBlock Text="{Binding Author}" FontSize="10" Foreground="#718096"/>
-                                            <TextBlock Text="{Binding FormattedDate}" FontSize="10" Foreground="#A0AEC0"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </TreeView.ItemTemplate>
-                            </TreeView>
-                        </Grid>
+                    <Border Grid.Row="0" Background="#4A5568" Padding="10">
+                        <TextBlock Text="Commit History" Foreground="White" FontWeight="Bold" FontSize="14"/>
                     </Border>
                     
-                    <!-- Splitter -->
-                    <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="#CBD5E0"/>
-                    
-                    <!-- Commit Details Panel -->
-                    <Border Grid.Column="2" BorderBrush="#CBD5E0" BorderThickness="1" CornerRadius="4">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            
-                            <Border Grid.Row="0" Background="#4A5568" Padding="10">
-                                <TextBlock Text="Commit Details" Foreground="White" FontWeight="Bold" FontSize="14"/>
-                            </Border>
-                            
-                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="10">
-                                <StackPanel x:Name="CommitDetailsPanel">
-                                    <TextBlock Text="Select a commit to view details" 
-                                               FontStyle="Italic" Foreground="#718096" 
-                                               HorizontalAlignment="Center" VerticalAlignment="Center"
-                                               x:Name="NoSelectionText"/>
-                                    
-                                    <StackPanel x:Name="DetailsContent" Visibility="Collapsed">
-                                        <TextBlock Text="Commit ID:" FontWeight="Bold" Margin="0,0,0,5"/>
-                                        <TextBox x:Name="CommitIdTextBox" IsReadOnly="True" Background="#F7FAFC" Margin="0,0,0,10"/>
-                                        
-                                        <TextBlock Text="Author:" FontWeight="Bold" Margin="0,0,0,5"/>
-                                        <TextBox x:Name="AuthorTextBox" IsReadOnly="True" Background="#F7FAFC" Margin="0,0,0,10"/>
-                                        
-                                        <TextBlock Text="Date:" FontWeight="Bold" Margin="0,0,0,5"/>
-                                        <TextBox x:Name="DateTextBox" IsReadOnly="True" Background="#F7FAFC" Margin="0,0,0,10"/>
-                                        
-                                        <TextBlock Text="Message:" FontWeight="Bold" Margin="0,0,0,5"/>
-                                        <TextBox x:Name="MessageTextBox" IsReadOnly="True" Background="#F7FAFC" 
-                                                 TextWrapping="Wrap" AcceptsReturn="True" MinHeight="100" 
-                                                 ScrollViewer.VerticalScrollBarVisibility="Auto"/>
-                                    </StackPanel>
+                    <TreeView x:Name="CommitHistoryTreeView" Grid.Row="1" 
+                              SelectedItemChanged="CommitHistoryTreeView_SelectedItemChanged"
+                              ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <TreeView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Vertical" Margin="2">
+                                    <TextBlock Text="{Binding ShortId}" FontWeight="Bold" Foreground="#2B6CB0"/>
+                                    <TextBlock Text="{Binding ShortMessage}" Foreground="#4A5568"/>
+                                    <TextBlock Text="{Binding Author}" FontSize="10" Foreground="#718096"/>
+                                    <TextBlock Text="{Binding FormattedDate}" FontSize="10" Foreground="#A0AEC0"/>
                                 </StackPanel>
-                            </ScrollViewer>
-                        </Grid>
-                    </Border>
+                            </DataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
                 </Grid>
+            </Border>
+            
+            <!-- Splitter -->
+            <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="#CBD5E0"/>
+            
+            <!-- Commit Details Panel -->
+            <Border Grid.Column="2" BorderBrush="#CBD5E0" BorderThickness="1" CornerRadius="4">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Border Grid.Row="0" Background="#4A5568" Padding="10">
+                        <TextBlock Text="Commit Details" Foreground="White" FontWeight="Bold" FontSize="14"/>
+                    </Border>
+                    
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="10">
+                        <StackPanel x:Name="CommitDetailsPanel">
+                            <TextBlock Text="Select a commit to view details" 
+                                       FontStyle="Italic" Foreground="#718096" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       x:Name="NoSelectionText"/>
+                            
+                            <StackPanel x:Name="DetailsContent" Visibility="Collapsed">
+                                <TextBlock Text="Commit ID:" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <TextBox x:Name="CommitIdTextBox" IsReadOnly="True" Background="#F7FAFC" Margin="0,0,0,10"/>
+                                
+                                <TextBlock Text="Author:" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <TextBox x:Name="AuthorTextBox" IsReadOnly="True" Background="#F7FAFC" Margin="0,0,0,10"/>
+                                
+                                <TextBlock Text="Date:" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <TextBox x:Name="DateTextBox" IsReadOnly="True" Background="#F7FAFC" Margin="0,0,0,10"/>
+                                
+                                <TextBlock Text="Message:" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <TextBox x:Name="MessageTextBox" IsReadOnly="True" Background="#F7FAFC" 
+                                         TextWrapping="Wrap" AcceptsReturn="True" MinHeight="100" 
+                                         ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
             </TabItem>
             
             <TabItem Header="File Selection">

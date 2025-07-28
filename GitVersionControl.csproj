@@ -9,10 +9,36 @@
     <AssemblyTitle>Git Version Control GUI</AssemblyTitle>
     <AssemblyDescription>A simple GUI tool for Git version control</AssemblyDescription>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    
+    <!-- MSIX Packaging Properties -->
+    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <PackageCertificateThumbprint></PackageCertificateThumbprint>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+    <GenerateTestArtifacts>True</GenerateTestArtifacts>
+    <AppxBundle>Always</AppxBundle>
+    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="0.31.0" />
   </ItemGroup>
+
+  <!-- MSIX Package Properties -->
+  <PropertyGroup>
+    <ApplicationDisplayName>Git Version Control GUI</ApplicationDisplayName>
+    <ApplicationDescription>A simple, user-friendly GUI tool for Git version control</ApplicationDescription>
+    <ApplicationName>GitVersionControl</ApplicationName>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
+    <ApplicationPublisher>Your Company Name</ApplicationPublisher>
+    <ApplicationPublisherDisplayName>Your Company Display Name</ApplicationPublisherDisplayName>
+    <ApplicationLogo>Assets\StoreLogo.png</ApplicationLogo>
+    <ApplicationEntryPoint>GitVersionControl.App</ApplicationEntryPoint>
+    <ApplicationCapabilities>
+      <Capability Name="internetClient" />
+      <Capability Name="runFullTrust" />
+    </ApplicationCapabilities>
+  </PropertyGroup>
 
 </Project> 
