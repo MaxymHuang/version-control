@@ -17,7 +17,7 @@ A simple, user-friendly GUI tool for Git version control, designed for people wh
 - **Selective Committing**: Choose specific files to stage and commit, giving you full control over what gets included
 - **File Status Tracking**: View the status of all files (modified, added, untracked, deleted, renamed)
 - **Batch Operations**: Select all, deselect all, stage selected, and unstage selected files with ease
-- **Repository Reset**: Reset to any previous commit with confirmation dialog
+- **Repository Reset**: Hard reset to any previous commit with confirmation dialog (actually modifies files)
 - **Discard All Changes**: Safely discard all uncommitted changes with confirmation
 - **File Explorer**: Tree-like file browser similar to VS Code's explorer panel
 - **Professional Branding**: Git icon integration for authentic Git experience
@@ -105,10 +105,11 @@ dotnet publish -c Release -r win-x64 --self-contained
 - **File Explorer**: Tree-like file browser on the left showing all repository files
 - **Commit History**: Middle panel showing all commits with details
 - **Commit Details**: Right panel showing full commit information
-- **Reset to Commit**: Click "Reset to This Commit" button to reset to any previous commit
+- **Reset to Commit**: Click "HARD Reset to This Commit" button to reset to any previous commit
   - Shows confirmation dialog with commit details
-  - Resets working directory to match selected commit
-  - Any uncommitted changes will be lost
+  - Actually modifies files to match the selected commit
+  - Removes all uncommitted changes and untracked files
+  - This is a true hard reset that changes the working directory
 
 ### 7. File Selection and Committing
 - Switch to the **"File Selection"** tab to manage files for commits

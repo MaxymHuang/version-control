@@ -247,7 +247,7 @@ namespace GitVersionControl.Services
             }
         }
 
-        public bool ResetToCommit(string repositoryPath, string commitId, ResetMode resetMode = ResetMode.Soft)
+        public bool ResetToCommit(string repositoryPath, string commitId, ResetMode resetMode = ResetMode.Hard)
         {
             try
             {
@@ -257,13 +257,40 @@ namespace GitVersionControl.Services
                 if (commit == null)
                     throw new InvalidOperationException($"Commit {commitId} not found");
                 
+                // Perform the reset
                 repo.Reset(resetMode, commit);
+                
+                // If it's a hard reset, also clean up untracked files
+                if (resetMode == ResetMode.Hard)
+                {
+                    // Remove untracked files and directories
+                    var status = repo.RetrieveStatus();
+                    foreach (var entry in status.Untracked)
+                    {
+                        var fullPath = Path.Combine(repositoryPath, entry.FilePath);
+                        if (File.Exists(fullPath))
+                            File.Delete(fullPath);
+                        else if (Directory.Exists(fullPath))
+                            Directory.Delete(fullPath, true);
+                    }
+                }
+                
                 return true;
             }
             catch (Exception ex)
             {
                 throw new InvalidOperationException($"Failed to reset to commit {commitId}: {ex.Message}", ex);
             }
+        }
+
+        public bool SoftResetToCommit(string repositoryPath, string commitId)
+        {
+            return ResetToCommit(repositoryPath, commitId, ResetMode.Soft);
+        }
+
+        public bool HardResetToCommit(string repositoryPath, string commitId)
+        {
+            return ResetToCommit(repositoryPath, commitId, ResetMode.Hard);
         }
 
         public bool DiscardAllChanges(string repositoryPath)

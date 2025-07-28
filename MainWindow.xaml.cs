@@ -464,13 +464,16 @@ namespace GitVersionControl
             if (CommitHistoryTreeView.SelectedItem is TreeViewItem item && item.Tag is CommitInfo commit)
             {
                 var result = MessageBox.Show(
-                    $"Are you sure you want to reset to commit '{commit.ShortId}'?\n\n" +
-                    $"This will reset your working directory to match this commit.\n" +
-                    $"Any uncommitted changes will be lost.\n\n" +
+                    $"Are you sure you want to HARD RESET to commit '{commit.ShortId}'?\n\n" +
+                    $"This will:\n" +
+                    $"• Reset all files to match this commit exactly\n" +
+                    $"• Remove all uncommitted changes\n" +
+                    $"• Remove all untracked files\n" +
+                    $"• This action cannot be undone!\n\n" +
                     $"Commit: {commit.ShortMessage}\n" +
                     $"Author: {commit.Author}\n" +
                     $"Date: {commit.FormattedDate}",
-                    "Confirm Reset",
+                    "Confirm HARD Reset",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Warning);
 
