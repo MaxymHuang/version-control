@@ -10,6 +10,14 @@
     <AssemblyDescription>A simple GUI tool for Git version control</AssemblyDescription>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     
+    <!-- Self-contained publishing properties -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <PublishTrimmed>false</PublishTrimmed>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    
     <!-- MSIX Packaging Properties -->
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
@@ -25,6 +33,10 @@
     <PackageReference Include="LibGit2Sharp" Version="0.31.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Resource Include="Assets\git-icon-black.png" />
+  </ItemGroup>
+
   <!-- MSIX Package Properties -->
   <PropertyGroup>
     <ApplicationDisplayName>Git Version Control GUI</ApplicationDisplayName>
@@ -33,7 +45,7 @@
     <ApplicationVersion>1.0.0.0</ApplicationVersion>
     <ApplicationPublisher>Your Company Name</ApplicationPublisher>
     <ApplicationPublisherDisplayName>Your Company Display Name</ApplicationPublisherDisplayName>
-    <ApplicationLogo>Assets\StoreLogo.png</ApplicationLogo>
+    <ApplicationLogo>Assets\git-icon-black.png</ApplicationLogo>
     <ApplicationEntryPoint>GitVersionControl.App</ApplicationEntryPoint>
     <ApplicationCapabilities>
       <Capability Name="internetClient" />

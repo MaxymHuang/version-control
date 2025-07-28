@@ -246,5 +246,83 @@ namespace GitVersionControl.Services
                 throw new InvalidOperationException($"Failed to commit changes: {ex.Message}", ex);
             }
         }
+
+        public bool ResetToCommit(string repositoryPath, string commitId, ResetMode resetMode = ResetMode.Soft)
+        {
+            try
+            {
+                using var repo = new Repository(repositoryPath);
+                var commit = repo.Lookup<Commit>(commitId);
+                
+                if (commit == null)
+                    throw new InvalidOperationException($"Commit {commitId} not found");
+                
+                repo.Reset(resetMode, commit);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Failed to reset to commit {commitId}: {ex.Message}", ex);
+            }
+        }
+
+        public bool DiscardAllChanges(string repositoryPath)
+        {
+            try
+            {
+                using var repo = new Repository(repositoryPath);
+                
+                // Reset working directory to match HEAD
+                repo.Reset(ResetMode.Hard, repo.Head.Tip);
+                
+                // Remove untracked files
+                var status = repo.RetrieveStatus();
+                foreach (var entry in status.Untracked)
+                {
+                    var fullPath = Path.Combine(repositoryPath, entry.FilePath);
+                    if (File.Exists(fullPath))
+                        File.Delete(fullPath);
+                    else if (Directory.Exists(fullPath))
+                        Directory.Delete(fullPath, true);
+                }
+                
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Failed to discard changes: {ex.Message}", ex);
+            }
+        }
+
+        public List<string> GetRepositoryFiles(string repositoryPath)
+        {
+            var files = new List<string>();
+            
+            try
+            {
+                using var repo = new Repository(repositoryPath);
+                var workDir = repo.Info.WorkingDirectory;
+                
+                // Get all files in the working directory
+                var allFiles = Directory.GetFiles(workDir, "*", SearchOption.AllDirectories);
+                
+                foreach (var file in allFiles)
+                {
+                    // Skip .git directory
+                    if (file.Contains("\\.git\\"))
+                        continue;
+                    
+                    // Get relative path from repository root
+                    var relativePath = Path.GetRelativePath(workDir, file);
+                    files.Add(relativePath);
+                }
+                
+                return files.OrderBy(f => f).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Failed to get repository files: {ex.Message}", ex);
+            }
+        }
     }
 } 

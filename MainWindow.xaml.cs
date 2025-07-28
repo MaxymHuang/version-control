@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -16,6 +17,7 @@ namespace GitVersionControl
         private string _currentRepositoryPath = string.Empty;
         private List<CommitInfo> _commits = new();
         private List<FileSelectionInfo> _workingDirectoryFiles = new();
+        private ObservableCollection<FileTreeItem> _fileTreeItems = new();
 
         public MainWindow()
         {
@@ -111,6 +113,9 @@ namespace GitVersionControl
                     
                     // Load working directory files
                     LoadWorkingDirectoryFiles();
+                    
+                    // Load file tree
+                    LoadFileTree();
                     
                     // Update status
                     StatusTextBlock.Text = _gitService.GetRepositoryStatus(path);
@@ -225,6 +230,7 @@ namespace GitVersionControl
             DeselectAllButton.IsEnabled = hasRepository && _workingDirectoryFiles.Any();
             StageSelectedButton.IsEnabled = hasRepository && _workingDirectoryFiles.Any(f => f.IsSelected);
             UnstageSelectedButton.IsEnabled = hasRepository && _workingDirectoryFiles.Any(f => f.IsSelected);
+            DiscardAllChangesButton.IsEnabled = hasRepository && _workingDirectoryFiles.Any();
             CommitButton.IsEnabled = hasRepository;
         }
 
@@ -393,6 +399,148 @@ namespace GitVersionControl
             {
                 MessageBox.Show($"Error loading working directory files:\n{ex.Message}", "Error", 
                                MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void LoadFileTree()
+        {
+            try
+            {
+                var files = _gitService.GetRepositoryFiles(_currentRepositoryPath);
+                _fileTreeItems.Clear();
+                
+                // Create root node
+                var rootNode = new FileTreeItem("Repository", _currentRepositoryPath, true);
+                rootNode.IsExpanded = true;
+                
+                // Build tree structure
+                foreach (var file in files)
+                {
+                    var parts = file.Split(Path.DirectorySeparatorChar);
+                    var currentNode = rootNode;
+                    
+                    for (int i = 0; i < parts.Length; i++)
+                    {
+                        var part = parts[i];
+                        var isLast = i == parts.Length - 1;
+                        var fullPath = isLast ? file : string.Join(Path.DirectorySeparatorChar, parts.Take(i + 1));
+                        
+                        var existingChild = currentNode.Children.FirstOrDefault(c => c.Name == part);
+                        if (existingChild == null)
+                        {
+                            var newItem = new FileTreeItem(part, fullPath, !isLast);
+                            currentNode.Children.Add(newItem);
+                            currentNode = newItem;
+                        }
+                        else
+                        {
+                            currentNode = existingChild;
+                        }
+                    }
+                }
+                
+                FileTreeView.ItemsSource = _fileTreeItems;
+                _fileTreeItems.Add(rootNode);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading file tree:\n{ex.Message}", "Error", 
+                               MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void FileTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue is FileTreeItem item && !item.IsDirectory)
+            {
+                // Handle file selection if needed
+                // For now, just show the file path in status
+                StatusTextBlock.Text = $"Selected file: {item.FullPath}";
+            }
+        }
+
+        private void ResetToCommitButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (CommitHistoryTreeView.SelectedItem is TreeViewItem item && item.Tag is CommitInfo commit)
+            {
+                var result = MessageBox.Show(
+                    $"Are you sure you want to reset to commit '{commit.ShortId}'?\n\n" +
+                    $"This will reset your working directory to match this commit.\n" +
+                    $"Any uncommitted changes will be lost.\n\n" +
+                    $"Commit: {commit.ShortMessage}\n" +
+                    $"Author: {commit.Author}\n" +
+                    $"Date: {commit.FormattedDate}",
+                    "Confirm Reset",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        var success = _gitService.ResetToCommit(_currentRepositoryPath, commit.Id);
+                        
+                        if (success)
+                        {
+                            MessageBox.Show($"Successfully reset to commit '{commit.ShortId}'", "Reset Successful", 
+                                           MessageBoxButton.OK, MessageBoxImage.Information);
+                            
+                            // Refresh all data
+                            LoadRepository(_currentRepositoryPath);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Failed to reset to commit.", "Reset Failed", 
+                                           MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error resetting to commit:\n{ex.Message}", "Error", 
+                                       MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+        }
+
+        private void DiscardAllChangesButton_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show(
+                "Are you sure you want to discard ALL changes?\n\n" +
+                "This will:\n" +
+                "• Reset all modified files to their last committed state\n" +
+                "• Remove all untracked files\n" +
+                "• Remove all staged changes\n\n" +
+                "This action cannot be undone!",
+                "Confirm Discard All Changes",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    var success = _gitService.DiscardAllChanges(_currentRepositoryPath);
+                    
+                    if (success)
+                    {
+                        MessageBox.Show("Successfully discarded all changes.", "Discard Successful", 
+                                       MessageBoxButton.OK, MessageBoxImage.Information);
+                        
+                        // Refresh all data
+                        LoadRepository(_currentRepositoryPath);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Failed to discard changes.", "Discard Failed", 
+                                       MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error discarding changes:\n{ex.Message}", "Error", 
+                                   MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
     }

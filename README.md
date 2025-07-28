@@ -17,6 +17,10 @@ A simple, user-friendly GUI tool for Git version control, designed for people wh
 - **Selective Committing**: Choose specific files to stage and commit, giving you full control over what gets included
 - **File Status Tracking**: View the status of all files (modified, added, untracked, deleted, renamed)
 - **Batch Operations**: Select all, deselect all, stage selected, and unstage selected files with ease
+- **Repository Reset**: Reset to any previous commit with confirmation dialog
+- **Discard All Changes**: Safely discard all uncommitted changes with confirmation
+- **File Explorer**: Tree-like file browser similar to VS Code's explorer panel
+- **Professional Branding**: Git icon integration for authentic Git experience
 
 ## Technical Stack
 
@@ -96,12 +100,23 @@ dotnet publish -c Release -r win-x64 --self-contained
 ### 5. Refreshing Data
 - Use the **"Refresh"** button to reload the repository data after external changes
 
-### 6. File Selection and Committing (New Feature)
+### 6. Repository Explorer (New Feature)
+- Switch to the **"Repository Explorer"** tab for a comprehensive view
+- **File Explorer**: Tree-like file browser on the left showing all repository files
+- **Commit History**: Middle panel showing all commits with details
+- **Commit Details**: Right panel showing full commit information
+- **Reset to Commit**: Click "Reset to This Commit" button to reset to any previous commit
+  - Shows confirmation dialog with commit details
+  - Resets working directory to match selected commit
+  - Any uncommitted changes will be lost
+
+### 7. File Selection and Committing
 - Switch to the **"File Selection"** tab to manage files for commits
 - **Refresh Files**: Click to reload the list of files in the working directory
 - **Select All/Deselect All**: Quickly select or deselect all files
 - **Stage Selected**: Add selected files to the staging area
 - **Unstage Selected**: Remove selected files from the staging area
+- **Discard All Changes**: Safely discard all uncommitted changes with confirmation
 - **Commit Changes**: Create a new commit with staged files
   - Enter your name and email for the commit author
   - Write a descriptive commit message
@@ -120,7 +135,8 @@ dotnet publish -c Release -r win-x64 --self-contained
 GitVersionControl/
 ├── Models/
 │   ├── CommitInfo.cs          # Data model for commit information
-│   └── FileSelectionInfo.cs   # Data model for file selection and status
+│   ├── FileSelectionInfo.cs   # Data model for file selection and status
+│   └── FileTreeItem.cs        # Data model for file tree structure
 ├── Services/
 │   └── GitService.cs          # Git operations and repository management
 ├── App.xaml                   # WPF application definition
@@ -142,6 +158,9 @@ Handles all Git operations using LibGit2Sharp:
 - Working directory file management
 - File staging and unstaging
 - Commit creation with custom messages
+- Repository reset to specific commits
+- Discard all changes functionality
+- File tree generation for explorer
 
 ### CommitInfo Model
 Data structure representing commit information with properties for:
@@ -158,6 +177,14 @@ Data structure representing file selection information with properties for:
 - Selection state
 - Relative path for git operations
 
+### FileTreeItem Model
+Data structure representing file tree items with properties for:
+- File/directory name and path
+- Directory/file type identification
+- Tree expansion state
+- File icons based on file type
+- Hierarchical children collection
+
 ### MainWindow
 WPF interface providing:
 - Directory selection and browsing
@@ -167,6 +194,9 @@ WPF interface providing:
 - Status information display
 - File selection and staging interface
 - Commit creation with author information
+- File explorer tree view
+- Repository reset functionality
+- Discard changes functionality
 
 ## Limitations (MVP Version)
 
